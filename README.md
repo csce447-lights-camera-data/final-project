@@ -1,11 +1,11 @@
 # CSCE 447 Lights 💡, Camera 📸, Data 📊!! - Final Project
 ## Team Members
-- Nkemdi Anyiam - 
-- Dante Barbieri - code@dantebarbieri.dev
-- Anu Khatri - 
-- Mari Lopez - 
-- Shreya Nakkala - 
-- Maggie Pothuana - 
+- [Nkemdi Anyiam](https://github.com/NkemdiAnyiam) - nkemdianyiam@tamu.edu
+- [Dante Barbieri](https://github.com/pulchroxloom) - [danteb@tamu.edu](mailto:contact@dantebarbieri.dev)
+- [Anu Khatri](#) - ak41@tamu.edu
+- [Mari Lopez](https://github.com/mrllpz) - mrllpz@tamu.edu
+- [Shreya Nakkala](#) - shreya197@tamu.edu
+- [Maggie Pothuana](#) - p1008217@tamu.edu
 ## Git Procedures
 ### Work in individual branches
 Work should be done in a feature branch and merged into `main`. `main` is branch protected to prevent direct pushes. At least 1 approval is required before `main` can be merged into.
