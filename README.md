@@ -1,11 +1,11 @@
 # CSCE 447 Lights 💡, Camera 📸, Data 📊!! - Final Project
 ## Team Members
-Nkemdi Anyiam - 
-Dante Barbieri - code@dantebarbieri.dev
-Anu Khatri - 
-Mari Lopez - 
-Shreya Nakkala - 
-Maggie Pothuana - 
+- Nkemdi Anyiam - 
+- Dante Barbieri - code@dantebarbieri.dev
+- Anu Khatri - 
+- Mari Lopez - 
+- Shreya Nakkala - 
+- Maggie Pothuana - 
 ## Git Procedures
 ### Work in individual branches
 Work should be done in a feature branch and merged into `main`. `main` is branch protected to prevent direct pushes. At least 1 approval is required before `main` can be merged into.
