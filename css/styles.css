@@ -1,0 +1,119 @@
+:root {
+  --color-yellow: #F5C518;
+  --color-black: #000000;
+  --color-white: #fff;
+  --color-blue: #128bb5;
+
+  --color-gray-darkest: #121212;
+  --color-gray-dark: #1A1A1A;
+  --color-gray: #777;
+
+  --color-yellow-light: #fbf5e2;
+}
+
+html {
+  font-size: 62.5%;
+}
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--color-black);
+  display: flex;
+  justify-content: center;
+  font-family: 'Roboto', sans-serif;
+  line-height: 1;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: var(--color-black);
+  height: 100vh;
+  width: 100vw;
+  gap: 2rem;
+}
+
+.search-bar {
+  background-color: var(--color-gray-darkest);
+  min-height: 3.5rem;
+  display: flex;
+  align-self: stretch;
+  padding: 1rem;
+  display: flex;
+  position: relative;
+  justify-content: center;
+  align-items: center;
+}
+
+/* .text-logo {
+  background-color: var(--color-yellow);
+  color: var(--color-black);
+  font-size: 2.5rem;
+  font-weight: 900;
+  border-radius: 4px;
+  padding: 0.5rem 0.75rem;
+  position: absolute;
+  left: 13rem;
+} */
+
+input {
+  background-color: var(--color-white);
+  border-radius: 3px;
+  padding: 0.75rem 0.5rem;
+  max-width: 50rem;
+  min-width: 60%;
+  display: flex;
+  align-items: center;
+  color: var(--color-black);
+  border: none;
+  font-size: 1.5rem;
+  outline: none;
+  margin-right: -3.5rem;
+}
+
+input::placeholder {
+  color: var(--color-gray);
+}
+
+input:focus {
+  box-shadow: inset 0 0 0 2px var(--color-yellow);
+}
+
+#search-button {
+  background-color: transparent;
+  outline: none;
+  border: none;
+  display: flex;
+  align-items: center;
+}
+
+#search-button:hover {
+  cursor: pointer;
+}
+
+#search-button svg {
+  fill: var(--color-gray);
+}
+
+.graph-container {
+  background-color: var(--color-gray-dark);
+  width: 90%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-);
+  font-size: 6rem;
+  font-weight: 300;
+  letter-spacing: 1px;
+  color: var(--color-white);
+  display: flex;
+}
