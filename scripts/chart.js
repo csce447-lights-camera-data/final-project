@@ -1,9 +1,9 @@
+let datalist = [];
 
 anychart.onDocumentReady(function () {
   anychart.data.loadJsonFile("imdb.json", function (data) {
     var stage = anychart.graphics.create('graph-container');
 
-    let datalist = [];
     for (let val of Object.values(data)) {
       // console.log(val.avg_vote);
       datalist.push({x: val.avg_vote, value: val.budget, size: val.votes, movie: val.title});
@@ -92,3 +92,8 @@ anychart.onDocumentReady(function () {
 });
 
 
+
+const search = () => {
+  const title = document.getElementById("search-title").value;
+  console.log(title);
+}

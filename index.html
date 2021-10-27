@@ -23,8 +23,8 @@
     <div class="container">
         <div class="search-bar">
             <!-- <div class="text-logo">LCD</div> -->
-            <input type="text" placeholder="Search movie title" />
-            <button id="search-button" type="submit" aria-label="Submit Search">
+            <input id="search-title" type="text" placeholder="Search movie title"/>
+            <button id="search-button" type="submit" aria-label="Submit Search" onclick="search()">
                 <svg xmlns="http://www.w3.org/2000/svg"
                     width="24" height="24" class="ipc-icon ipc-icon--magnify" viewBox="0 0 24 24" fill="currentColor"
                     role="presentation">
@@ -40,7 +40,6 @@
         <div id="graph-container" class="graph-container">
             <!-- <p>GRAPH DATA HERE</p> -->
         </div>
-        <div id="result"></div>
     </div>
 </body>
 
