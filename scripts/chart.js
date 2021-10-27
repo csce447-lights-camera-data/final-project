@@ -1,51 +1,94 @@
+
 anychart.onDocumentReady(function () {
+  anychart.data.loadJsonFile("imdb.json", function (data) {
+    var stage = anychart.graphics.create('graph-container');
 
-  // create data
-  var data = [
-    {x: "2000", value: 1100, size: 3},
-    {x: "2001", value: 880, size: 4},
-    {x: "2002", value: 1100, size: 4},
-    {x: "2003", value: 1300, size: 5,
-     normal:   {
-         fill: "#b30059 0.3",
-         stroke: "#b30059"
-       },
-     hovered:  {
-         fill: "#b30059 0.1",
-         stroke: "2 #b30059"
-       },
-     selected: {
-         fill: "#b30059 0.5",
-         stroke: "4 #b30059"
-       }
-    },
-    {x: "2004", value: 921, size: 4.5},
-    {x: "2005", value: 1000, size: 3},
-    {x: "2006", value: 1400, size: 4}
-  ];
+    let datalist = [];
+    for (let val of Object.values(data)) {
+      // console.log(val.avg_vote);
+      datalist.push({x: val.avg_vote, value: val.budget, size: val.votes, movie: val.title});
+    }
+    console.log(datalist);
 
-  // create a chart
-  var chart = anychart.scatter();
+    var chart = anychart.scatter();
 
-  // set the interactivity mode
-  // chart.interactivity().hoverMode("by-x");
+    // create a bubble series and set the data
+    series = chart.bubble(datalist);
+    
+    
+    // set the chart title
+    chart.title("Bubble Chart: Appearance (Individual Points)");
 
-  // create a bubble series and set the data
-  series = chart.bubble(data);
-  
-  // set the chart title
-  chart.title("Bubble Chart: Appearance (Individual Points)");
+    // enable the legend
+    chart.legend(false);
 
-  // enable the legend
-  chart.legend(true);
+    chart.container(stage).draw();
+    
+    // set the titles of the axes
 
-  // set the titles of the axes
-  chart.xAxis().title("Year");
-  chart.yAxis().title("Sales, $");
-  
-  // set the container id
-  chart.container("graph-container");
+    chart.xAxis().title("Rating");
+    chart.yAxis().title("Budget");
+      
+    var tooltip = chart.tooltip();
 
-  // initiate drawing the chart
-  chart.draw();
+    // tooltip.format(() => this.value + " test")
+    tooltip.titleFormat("Title: {%movie}\nRating: {%x}\nBudget: ${%value}");
+    tooltip.separator(false);
+    tooltip.format("");
+    
+    chart.minBubbleSize("10px");
+    chart.maxBubbleSize("50px");
+
+
+    // scalable axes
+    chart.margin({left: 10, bottom: 10 });
+
+    // chart.interactivity().zoomOnMouseWheel(true);
+    var bounds = chart.getPixelBounds();
+
+    //create x-scroller
+    var xScroller = anychart.standalones.scroller();
+    xScroller.parentBounds(60, bounds.height-60, bounds.width-80, 50);
+    xScroller.container(stage).draw();
+
+    //create y-scroller
+    var yScroller = anychart.standalones.scroller();
+    yScroller.orientation('left');
+    yScroller.parentBounds(5, 10, 0, bounds.height-60);
+    yScroller.container(stage).draw();
+
+    //place scrollers on window resize
+    window.onresize = function(event) {
+      var bounds = chart.getPixelBounds();
+      xScroller.parentBounds(60, bounds.height-60, bounds.width-80, 50);
+      yScroller.parentBounds(5, 10, 0, bounds.height-60);
+    };
+
+    //get info about scales
+    var xScale = chart.xScale();
+    var yScale = chart.yScale();
+
+    var minX = xScale.minimum();
+    var maxX = xScale.maximum();
+    var minY = yScale.minimum();
+    var maxY = yScale.maximum();
+
+    //scroller listeners and handlers
+    xScroller.listen('scrollerchange', function(e) {
+      xScale.minimum(e.startRatio * maxX + minX);
+      xScale.maximum(e.endRatio * maxX);
+    });
+
+    yScroller.listen('scrollerchange', function(e) {
+      yScale.minimum(e.startRatio * maxY + minY);
+      yScale.maximum(e.endRatio * maxY);
+    });
+    
+    // chart.container("graph-container");
+
+    // // initiate drawing the chart
+    // chart.draw();
+  });
 });
+
+
