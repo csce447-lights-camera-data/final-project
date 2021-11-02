@@ -1,20 +1,25 @@
-let datalist = [];
+let dataset;
+let mapping;
+let series;
 
-anychart.onDocumentReady(function () {
-  anychart.data.loadJsonFile("imdb.json", function (data) {
+anychart.onDocumentReady(() => {
+  anychart.data.loadJsonFile("imdb.json", (data) => {
     var stage = anychart.graphics.create('graph-container');
+
+    let datalist = [];
 
     for (let val of Object.values(data)) {
       // console.log(val.avg_vote);
-      datalist.push({x: val.avg_vote, value: val.budget, size: val.votes, movie: val.title});
+      datalist.push({x: val.avg_vote, value: val.budget, size: val.votes, movie: val.original_title});
     }
-    console.log(datalist);
+    // console.log(datalist);
+    dataset = anychart.data.set(datalist)
+    mapping = dataset.mapAs()
 
     var chart = anychart.scatter();
 
     // create a bubble series and set the data
-    series = chart.bubble(datalist);
-    
+    series = chart.bubble(dataset);
     
     // set the chart title
     chart.title("Bubble Chart: Appearance (Individual Points)");
@@ -58,7 +63,7 @@ anychart.onDocumentReady(function () {
     yScroller.container(stage).draw();
 
     //place scrollers on window resize
-    window.onresize = function(event) {
+    window.onresize = (event) => {
       var bounds = chart.getPixelBounds();
       xScroller.parentBounds(60, bounds.height-60, bounds.width-80, 50);
       yScroller.parentBounds(5, 10, 0, bounds.height-60);
@@ -74,12 +79,12 @@ anychart.onDocumentReady(function () {
     var maxY = yScale.maximum();
 
     //scroller listeners and handlers
-    xScroller.listen('scrollerchange', function(e) {
+    xScroller.listen('scrollerchange', (e) => {
       xScale.minimum(e.startRatio * maxX + minX);
       xScale.maximum(e.endRatio * maxX);
     });
 
-    yScroller.listen('scrollerchange', function(e) {
+    yScroller.listen('scrollerchange', (e) => {
       yScale.minimum(e.startRatio * maxY + minY);
       yScale.maximum(e.endRatio * maxY);
     });
@@ -91,9 +96,16 @@ anychart.onDocumentReady(function () {
   });
 });
 
-
-
 const search = () => {
-  const title = document.getElementById("search-title").value;
-  console.log(title);
+  const input = document.getElementById("search-title").value;
+  const seperator = '.{0,3}'
+  let regexString = seperator
+  for(const c of input) { regexString += c + seperator; }
+  const regex = new RegExp(regexString, 'i');
+  if(input) {
+    const filtered = mapping.filter("movie", (title) => regex.test(title));
+    series.data(filtered);
+  } else {
+    series.data(dataset);
+  }
 }
