@@ -2,6 +2,8 @@
 <html>
 
 <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="./public/favicon.ico" />
     <!-- FONTS -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -23,7 +25,7 @@
     <div class="container">
         <div class="search-bar">
             <!-- <div class="text-logo">LCD</div> -->
-            <input id="search-title" type="text" placeholder="Search movie title"/>
+            <input id="search-title" type="text" placeholder="Search movie title" onchange="search()"/>
             <button id="search-button" type="submit" aria-label="Submit Search" onclick="search()">
                 <svg xmlns="http://www.w3.org/2000/svg"
                     width="24" height="24" class="ipc-icon ipc-icon--magnify" viewBox="0 0 24 24" fill="currentColor"
