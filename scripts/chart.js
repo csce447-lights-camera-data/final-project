@@ -96,8 +96,14 @@ anychart.onDocumentReady(() => {
   });
 });
 
+const titleInput = document.getElementById("search-input--title");
+const budgetInputMin = document.getElementById("search-input--budget-min");
+const budgetInputMax = document.getElementById("search-input--budget-max");
+const ratingInputMin = document.getElementById("search-input--rating-min");
+const ratingInputMax = document.getElementById("search-input--rating-max");
+
 const search = () => {
-  const input = document.getElementById("search-title").value;
+  const input = titleInput.value;
   const seperator = '.{0,3}'
   let regexString = seperator
   for(const c of input) { regexString += c + seperator; }
@@ -108,4 +114,12 @@ const search = () => {
   } else {
     series.data(dataset);
   }
-}
+};
+
+// Cause submission of form to call search()
+const searchForm = document.getElementById('search-form');
+
+searchForm.addEventListener('submit', e => {
+  e.preventDefault();
+  search();
+});
