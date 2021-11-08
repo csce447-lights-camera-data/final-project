@@ -97,10 +97,10 @@ anychart.onDocumentReady(() => {
 });
 
 const titleInput = document.getElementById("search-input--title");
-const budgetInputMin = document.getElementById("search-input--budget-min");
-const budgetInputMax = document.getElementById("search-input--budget-max");
-const ratingInputMin = document.getElementById("search-input--rating-min");
-const ratingInputMax = document.getElementById("search-input--rating-max");
+const budgetMinInput = document.getElementById("search-input--budget-min");
+const budgetMaxInput = document.getElementById("search-input--budget-max");
+const ratingMinInput = document.getElementById("search-input--rating-min");
+const ratingMaxInput = document.getElementById("search-input--rating-max");
 
 const search = () => {
   const input = titleInput.value;
