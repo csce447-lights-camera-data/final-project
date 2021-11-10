@@ -9,10 +9,33 @@ anychart.onDocumentReady(() => {
     let datalist = [];
 
     for (let val of Object.values(data)) {
-      // console.log(val.avg_vote);
-      datalist.push({ x: val.avg_vote, value: val.budget, size: val.votes, movie: val.original_title });
+      // color1 = 0xE82C0C; 
+      const color1_r = 0xE8;
+      const color1_g = 0x2C;
+      const color1_b = 0x0C;
+      // color2 = 0x003C78;
+      const color2_r = 0x00;
+      const color2_g = 0x3C;
+      const color2_b = 0x78;
+      const alpha = val.avg_vote / 10;
+
+      const rr = Math.trunc(((1 - alpha) * color1_r + alpha * color2_r));
+      const rg = Math.trunc(((1 - alpha) * color1_g + alpha * color2_g));
+      const rb = Math.trunc(((1 - alpha) * color1_b + alpha * color2_b));
+
+      const lerp = Number((rr << 16) + (rg << 8) + rb).toString(16);
+
+      console.log(lerp);
+      const normal_fill = `#${lerp} 0.5`;
+      const normal_stroke = `#${lerp}`;
+      datalist.push({ x: val.avg_vote, value: val.budget, size: val.votes, movie: val.original_title,
+      normal: {
+        fill: normal_fill,
+        stroke: normal_stroke
+      }
+      });
     }
-    // console.log(datalist);
+    
     dataset = anychart.data.set(datalist)
     mapping = dataset.mapAs()
 
