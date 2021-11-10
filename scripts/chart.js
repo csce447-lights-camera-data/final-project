@@ -9,8 +9,11 @@ anychart.onDocumentReady(() => {
     let datalist = [];
 
     for (let val of Object.values(data)) {
-      // console.log(val.avg_vote);
-      datalist.push({ x: val.avg_vote, value: val.budget, size: val.votes, movie: val.original_title });
+      // console.log(data[val].avg_vote);
+      datalist.push({x: val.avg_vote, value: val.budget, size: val.votes, 
+        movie: val.original_title, income: val.worlwide_gross_income, 
+        director: val.director, writer: val.writer, actors: val.actors, 
+        summary: val.description, genres: val.genre});
     }
     // console.log(datalist);
     dataset = anychart.data.set(datalist)
@@ -89,12 +92,35 @@ anychart.onDocumentReady(() => {
       yScale.maximum(e.endRatio * maxY);
     });
 
+    chart.listen('pointClick', (e) => {
+      var index = e.iterator.getIndex();
+      var row = dataset.row(index);
+      displayResult(row);
+    })
+    
     // chart.container("graph-container");
 
     // // initiate drawing the chart
     // chart.draw();
   });
 });
+
+const displayResult = (movie) => {
+  const res = '<div align="center">' +
+                  '<h2>' + movie.movie + '</h2>' +
+                  '<table style="width=100%">' +
+                    '<tr><td style="width: 30%"><h3>Rating</h3></td><td><h3>' + movie.x + '</h3></td></tr>' +
+                    '<tr><td style="width: 30%"><h3>Budget</h3></td><td><h3>' + movie.value + '</h3></td></tr>' + 
+                    '<tr><td style="width: 30%"><h3>Worldwide Gross Income</h3></td><td><h3>' + movie.income + '</h3></td></tr>' +
+                    '<tr><td style="width: 30%"><h3>Genres</h3></td><td><h3>' + (movie.genres).split(', ').join('<br/>') + '</h3></td></tr>' + 
+                    '<tr><td style="width: 30%"><h3>Director</h3></td><td><h3>' + (movie.director).split(', ').join('<br/>') + '</h3></td></tr>' + 
+                    '<tr><td style="width: 30%"><h3>Writer</h3></td><td><h3>' + (movie.writer).split(', ').join('<br/>') + '</h3></td></tr>' + 
+                    '<tr><td style="width: 30%"><h3>Actors</h3></td><td><h3>' + (movie.actors).split(', ').join('<br/>') + '</h3></td></tr>' + 
+                    '<tr><td style="width: 30%"><h3>Summary</h3></td><td><h3>' + movie.summary + '</h3></td></tr>' + 
+                  '</table></div>';
+  document.getElementById("result").innerHTML = res;
+  
+}
 
 const titleInput = document.getElementById("search-input--title");
 const budgetMinInput = document.getElementById("search-input--budget-min");
