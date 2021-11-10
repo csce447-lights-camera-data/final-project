@@ -23,7 +23,7 @@ anychart.onDocumentReady(() => {
 
     // create a bubble series and set the data
     series = chart.bubble(dataset);
-    
+
     // set the chart title
     chart.title("Bubble Chart: Appearance (Individual Points)");
 
@@ -31,45 +31,45 @@ anychart.onDocumentReady(() => {
     chart.legend(false);
 
     chart.container(stage).draw();
-    
+
     // set the titles of the axes
 
     chart.xAxis().title("Rating");
     chart.yAxis().title("Budget");
-      
+
     var tooltip = chart.tooltip();
 
     // tooltip.format(() => this.value + " test")
     tooltip.titleFormat("Title: {%movie}\nRating: {%x}\nBudget: ${%value}");
     tooltip.separator(false);
     tooltip.format("");
-    
+
     chart.minBubbleSize("10px");
     chart.maxBubbleSize("50px");
 
 
     // scalable axes
-    chart.margin({left: 10, bottom: 10 });
+    chart.margin({ left: 10, bottom: 10 });
 
     // chart.interactivity().zoomOnMouseWheel(true);
     var bounds = chart.getPixelBounds();
 
     //create x-scroller
     var xScroller = anychart.standalones.scroller();
-    xScroller.parentBounds(60, bounds.height-60, bounds.width-80, 50);
+    xScroller.parentBounds(60, bounds.height - 60, bounds.width - 80, 50);
     xScroller.container(stage).draw();
 
     //create y-scroller
     var yScroller = anychart.standalones.scroller();
     yScroller.orientation('left');
-    yScroller.parentBounds(5, 10, 0, bounds.height-60);
+    yScroller.parentBounds(5, 10, 0, bounds.height - 60);
     yScroller.container(stage).draw();
 
     //place scrollers on window resize
     window.onresize = (event) => {
       var bounds = chart.getPixelBounds();
-      xScroller.parentBounds(60, bounds.height-60, bounds.width-80, 50);
-      yScroller.parentBounds(5, 10, 0, bounds.height-60);
+      xScroller.parentBounds(60, bounds.height - 60, bounds.width - 80, 50);
+      yScroller.parentBounds(5, 10, 0, bounds.height - 60);
     };
 
     //get info about scales
@@ -122,16 +122,72 @@ const displayResult = (movie) => {
   
 }
 
-const search = () => {
-  const input = document.getElementById("search-title").value;
-  const seperator = '.{0,3}'
+const titleInput = document.getElementById("search-input--title");
+const budgetMinInput = document.getElementById("search-input--budget-min");
+const budgetMaxInput = document.getElementById("search-input--budget-max");
+const ratingMinInput = document.getElementById("search-input--rating-min");
+const ratingMaxInput = document.getElementById("search-input--rating-max");
+
+const searchTitle = (filtered) => {
+  const input = titleInput.value;
+  const seperator = '.{0,1}'
   let regexString = seperator
-  for(const c of input) { regexString += c + seperator; }
+  for (const c of input) { regexString += c + seperator; }
   const regex = new RegExp(regexString, 'i');
-  if(input) {
-    const filtered = mapping.filter("movie", (title) => regex.test(title));
-    series.data(filtered);
-  } else {
-    series.data(dataset);
+  if (input) {
+    filtered = filtered.filter("movie", (title) => regex.test(title));
   }
-}
+  return filtered;
+};
+
+const searchBudget = (filtered) => {
+  let inputMin = +budgetMinInput.value; // unary plus convert to number
+  let inputMax = +budgetMaxInput.value; // unary plus convert to number
+  if (!budgetMinInput.value) {
+    inputMin = -Infinity;
+  }
+  if (!budgetMaxInput.value) {
+    inputMax = Infinity;
+  }
+  if (inputMax < inputMin) {
+    const temp = inputMin;
+    inputMin = inputMax;
+    inputMax = temp;
+  }
+  return filtered.filter("value", (budget) => inputMin <= budget && budget <= inputMax);
+};
+
+const searchRating = (filtered) => {
+  let inputMin = +ratingMinInput.value; // unary plus convert to number
+  let inputMax = +ratingMaxInput.value; // unary plus convert to number
+  if (!ratingMinInput.value) {
+    inputMin = -Infinity;
+  }
+  if (!ratingMaxInput.value) {
+    inputMax = Infinity;
+  }
+  if (inputMax < inputMin) {
+    const temp = inputMin;
+    inputMin = inputMax;
+    inputMax = temp;
+  }
+  return filtered.filter("x", (rating) => inputMin <= rating && rating <= inputMax);
+};
+
+const search = () => series.data(
+  searchRating(
+    searchBudget(
+      searchTitle(
+        mapping
+      )
+    )
+  )
+);
+
+// Cause submission of form to call search()
+const searchForm = document.getElementById('search-form');
+
+searchForm.addEventListener('submit', e => {
+  e.preventDefault();
+  search();
+});
