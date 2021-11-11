@@ -28,17 +28,18 @@ anychart.onDocumentReady(() => {
       // console.log(lerp);
       const normal_fill = `#${lerp} 0.5`;
       const normal_stroke = `#${lerp}`;
-      datalist.push({ x: val.budget, value: val.worlwide_gross_income, size: val.votes, 
-        movie: val.original_title, rating: val.avg_vote, 
-        director: val.director, writer: val.writer, actors: val.actors, 
+      datalist.push({
+        x: val.budget, value: val.worlwide_gross_income, size: val.votes,
+        movie: val.original_title, rating: val.avg_vote,
+        director: val.director, writer: val.writer, actors: val.actors,
         summary: val.description, genres: val.genre,
-      normal: {
-        fill: normal_fill,
-        stroke: normal_stroke
-      }
+        normal: {
+          fill: normal_fill,
+          stroke: normal_stroke
+        }
       });
     }
-    
+
     dataset = anychart.data.set(datalist)
     mapping = dataset.mapAs()
 
@@ -120,7 +121,7 @@ anychart.onDocumentReady(() => {
       var row = series.data().row(index);
       displayResult(row);
     })
-    
+
     // chart.container("graph-container");
 
     // // initiate drawing the chart
@@ -130,24 +131,26 @@ anychart.onDocumentReady(() => {
 
 const displayResult = (movie) => {
   const res = '<div align="center">' +
-                  '<h2>' + movie.movie + '</h2>' +
-                  '<table style="width=100%">' +
-                    '<tr><td style="width: 30%"><h3>Summary</h3></td><td><h3>' + movie.summary + '</h3></td></tr>' + 
-                    '<tr><td style="width: 30%"><h3>Budget</h3></td><td><h3> $' + movie.x + '</h3></td></tr>' + 
-                    '<tr><td style="width: 30%"><h3>Worldwide Gross Income</h3></td><td><h3> $' + movie.value + '</h3></td></tr>' +
-                    '<tr><td style="width: 30%"><h3>Rating</h3></td><td><h3>' + movie.rating + '</h3></td></tr>' +
-                    '<tr><td style="width: 30%"><h3>Genres</h3></td><td><h3>' + (movie.genres).split(', ').join('<br/>') + '</h3></td></tr>' + 
-                    '<tr><td style="width: 30%"><h3>Director</h3></td><td><h3>' + (movie.director).split(', ').join('<br/>') + '</h3></td></tr>' + 
-                    '<tr><td style="width: 30%"><h3>Writer</h3></td><td><h3>' + (movie.writer).split(', ').join('<br/>') + '</h3></td></tr>' + 
-                    '<tr><td style="width: 30%"><h3>Actors</h3></td><td><h3>' + (movie.actors).split(', ').join('<br/>') + '</h3></td></tr>' + 
-                  '</table></div>';
+    '<h2>' + movie.movie + '</h2>' +
+    '<table style="width=100%">' +
+    '<tr><td style="width: 30%"><h3>Summary</h3></td><td><h3>' + movie.summary + '</h3></td></tr>' +
+    '<tr><td style="width: 30%"><h3>Budget</h3></td><td><h3> $' + movie.x + '</h3></td></tr>' +
+    '<tr><td style="width: 30%"><h3>Worldwide Gross Income</h3></td><td><h3> $' + movie.value + '</h3></td></tr>' +
+    '<tr><td style="width: 30%"><h3>Rating</h3></td><td><h3>' + movie.rating + '</h3></td></tr>' +
+    '<tr><td style="width: 30%"><h3>Genres</h3></td><td><h3>' + (movie.genres).split(', ').join('<br/>') + '</h3></td></tr>' +
+    '<tr><td style="width: 30%"><h3>Director</h3></td><td><h3>' + (movie.director).split(', ').join('<br/>') + '</h3></td></tr>' +
+    '<tr><td style="width: 30%"><h3>Writer</h3></td><td><h3>' + (movie.writer).split(', ').join('<br/>') + '</h3></td></tr>' +
+    '<tr><td style="width: 30%"><h3>Actors</h3></td><td><h3>' + (movie.actors).split(', ').join('<br/>') + '</h3></td></tr>' +
+    '</table></div>';
   document.getElementById("result").innerHTML = res;
-  
+
 }
 
 const titleInput = document.getElementById("search-input--title");
 const budgetMinInput = document.getElementById("search-input--budget-min");
 const budgetMaxInput = document.getElementById("search-input--budget-max");
+const revenueMinInput = document.getElementById("search-input--revenue-min");
+const revenueMaxInput = document.getElementById("search-input--revenue-max");
 const ratingMinInput = document.getElementById("search-input--rating-min");
 const ratingMaxInput = document.getElementById("search-input--rating-max");
 
@@ -163,6 +166,15 @@ const searchTitle = (filtered) => {
   return filtered;
 };
 
+const swap = (a, b) => [b, a]
+
+const searchRange = (filtered, chartval, rangeMin, rangeMax) => {
+  if (rangeMax < rangeMin) {
+    rangeMin, rangeMax = swap(rangeMin, rangeMax);
+  }
+  return filtered.filter(chartval, (val) => rangeMin <= val && val <= rangeMax);
+};
+
 const searchBudget = (filtered) => {
   let inputMin = +budgetMinInput.value; // unary plus convert to number
   let inputMax = +budgetMaxInput.value; // unary plus convert to number
@@ -172,12 +184,19 @@ const searchBudget = (filtered) => {
   if (!budgetMaxInput.value) {
     inputMax = Infinity;
   }
-  if (inputMax < inputMin) {
-    const temp = inputMin;
-    inputMin = inputMax;
-    inputMax = temp;
+  return searchRange(filtered, "x", inputMin, inputMax);
+};
+
+const searchRevenue = (filtered) => {
+  let inputMin = +revenueMinInput.value; // unary plus convert to number
+  let inputMax = +revenueMaxInput.value; // unary plus convert to number
+  if (!revenueMinInput.value) {
+    inputMin = -Infinity;
   }
-  return filtered.filter("x", (budget) => inputMin <= budget && budget <= inputMax);
+  if (!revenueMaxInput.value) {
+    inputMax = Infinity;
+  }
+  return searchRange(filtered, "value", inputMin, inputMax);
 };
 
 const searchRating = (filtered) => {
@@ -189,19 +208,16 @@ const searchRating = (filtered) => {
   if (!ratingMaxInput.value) {
     inputMax = Infinity;
   }
-  if (inputMax < inputMin) {
-    const temp = inputMin;
-    inputMin = inputMax;
-    inputMax = temp;
-  }
-  return filtered.filter("rating", (rating) => inputMin <= rating && rating <= inputMax);
+  return searchRange(filtered, "rating", inputMin, inputMax);
 };
 
 const search = () => series.data(
   searchRating(
     searchBudget(
-      searchTitle(
-        mapping
+      searchRevenue(
+        searchTitle(
+          mapping
+        )
       )
     )
   )
