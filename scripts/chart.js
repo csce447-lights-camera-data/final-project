@@ -117,7 +117,7 @@ anychart.onDocumentReady(() => {
 
     chart.listen('pointClick', (e) => {
       var index = e.iterator.getIndex();
-      var row = dataset.row(index);
+      var row = series.data().row(index);
       displayResult(row);
     })
     
