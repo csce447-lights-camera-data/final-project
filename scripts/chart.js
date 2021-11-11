@@ -25,10 +25,13 @@ anychart.onDocumentReady(() => {
 
       const lerp = Number((rr << 16) + (rg << 8) + rb).toString(16);
 
-      console.log(lerp);
+      // console.log(lerp);
       const normal_fill = `#${lerp} 0.5`;
       const normal_stroke = `#${lerp}`;
-      datalist.push({ x: val.avg_vote, value: val.budget, size: val.votes, movie: val.original_title,
+      datalist.push({ x: val.budget, value: val.worlwide_gross_income, size: val.votes, 
+        movie: val.original_title, rating: val.avg_vote, 
+        director: val.director, writer: val.writer, actors: val.actors, 
+        summary: val.description, genres: val.genre,
       normal: {
         fill: normal_fill,
         stroke: normal_stroke
@@ -54,13 +57,13 @@ anychart.onDocumentReady(() => {
 
     // set the titles of the axes
 
-    chart.xAxis().title("Rating");
-    chart.yAxis().title("Budget");
+    chart.xAxis().title("Budget");
+    chart.yAxis().title("Revenue");
 
     var tooltip = chart.tooltip();
 
     // tooltip.format(() => this.value + " test")
-    tooltip.titleFormat("Title: {%movie}\nRating: {%x}\nBudget: ${%value}");
+    tooltip.titleFormat("Title: {%movie}\nRating: {%rating}\nBudget: ${%x}\nRevenue: {%value}");
     tooltip.separator(false);
     tooltip.format("");
 
@@ -112,12 +115,35 @@ anychart.onDocumentReady(() => {
       yScale.maximum(e.endRatio * maxY);
     });
 
+    chart.listen('pointClick', (e) => {
+      var index = e.iterator.getIndex();
+      var row = dataset.row(index);
+      displayResult(row);
+    })
+    
     // chart.container("graph-container");
 
     // // initiate drawing the chart
     // chart.draw();
   });
 });
+
+const displayResult = (movie) => {
+  const res = '<div align="center">' +
+                  '<h2>' + movie.movie + '</h2>' +
+                  '<table style="width=100%">' +
+                    '<tr><td style="width: 30%"><h3>Summary</h3></td><td><h3>' + movie.summary + '</h3></td></tr>' + 
+                    '<tr><td style="width: 30%"><h3>Budget</h3></td><td><h3> $' + movie.x + '</h3></td></tr>' + 
+                    '<tr><td style="width: 30%"><h3>Worldwide Gross Income</h3></td><td><h3> $' + movie.value + '</h3></td></tr>' +
+                    '<tr><td style="width: 30%"><h3>Rating</h3></td><td><h3>' + movie.rating + '</h3></td></tr>' +
+                    '<tr><td style="width: 30%"><h3>Genres</h3></td><td><h3>' + (movie.genres).split(', ').join('<br/>') + '</h3></td></tr>' + 
+                    '<tr><td style="width: 30%"><h3>Director</h3></td><td><h3>' + (movie.director).split(', ').join('<br/>') + '</h3></td></tr>' + 
+                    '<tr><td style="width: 30%"><h3>Writer</h3></td><td><h3>' + (movie.writer).split(', ').join('<br/>') + '</h3></td></tr>' + 
+                    '<tr><td style="width: 30%"><h3>Actors</h3></td><td><h3>' + (movie.actors).split(', ').join('<br/>') + '</h3></td></tr>' + 
+                  '</table></div>';
+  document.getElementById("result").innerHTML = res;
+  
+}
 
 const titleInput = document.getElementById("search-input--title");
 const budgetMinInput = document.getElementById("search-input--budget-min");
@@ -151,7 +177,7 @@ const searchBudget = (filtered) => {
     inputMin = inputMax;
     inputMax = temp;
   }
-  return filtered.filter("value", (budget) => inputMin <= budget && budget <= inputMax);
+  return filtered.filter("x", (budget) => inputMin <= budget && budget <= inputMax);
 };
 
 const searchRating = (filtered) => {
@@ -168,7 +194,7 @@ const searchRating = (filtered) => {
     inputMin = inputMax;
     inputMax = temp;
   }
-  return filtered.filter("x", (rating) => inputMin <= rating && rating <= inputMax);
+  return filtered.filter("rating", (rating) => inputMin <= rating && rating <= inputMax);
 };
 
 const search = () => series.data(
