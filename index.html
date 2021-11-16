@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+
     <link rel="icon" href="./public/favicon.ico" />
     <!-- FONTS -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -19,15 +19,17 @@
     <!-- SCRIPTS -->
     <script type="text/javascript" src="https://cdn.anychart.com/releases/8.10.0/js/anychart-base.min.js"></script>
     <script type="text/javascript" src="https://cdn.anychart.com/releases/8.10.0/js/anychart-ui.min.js"></script>
-    <script type="text/javascript" src="https://cdn.anychart.com/releases/8.10.0/js/anychart-ui-binding.min.js"></script>
-    <script type="text/javascript" src="https://cdn.anychart.com/releases/8.10.0/js/anychart-data-adapter.min.js"></script>
+    <script type="text/javascript"
+        src="https://cdn.anychart.com/releases/8.10.0/js/anychart-ui-binding.min.js"></script>
+    <script type="text/javascript"
+        src="https://cdn.anychart.com/releases/8.10.0/js/anychart-data-adapter.min.js"></script>
     <script type="module" src="./scripts/chart.js"></script>
 </head>
 
 <body>
     <div class="container">
         <form id="search-form" class="search-form">
-            <button class="expand-btn expand">
+            <button type="button" class="expand-btn expand">
                 <div></div>
             </button>
             <!-- Search by title -->
@@ -37,41 +39,43 @@
                     placeholder="Search movie title" />
             </div>
 
-            <!-- Search by budget range -->
-            <div class="search-bar search-bar--budget-min">
-                <input id="search-input--budget-min" class="search-input search-input--budget-min" type="number"
-                    placeholder="Search budget min" />
-            </div>
+            <div class="additional-search-fields collapsible hidden">
+                <!-- Search by budget range -->
+                <div class="search-bar search-bar--budget-min">
+                    <input id="search-input--budget-min" class="search-input search-input--budget-min" type="number"
+                        placeholder="Search budget min" />
+                </div>
 
-            <div class="search-bar search-bar--budget-max">
-                <input id="search-input--budget-max" class="search-input search-input--budget-max" type="number"
-                    placeholder="Search budget max" />
-            </div>
+                <div class="search-bar search-bar--budget-max">
+                    <input id="search-input--budget-max" class="search-input search-input--budget-max" type="number"
+                        placeholder="Search budget max" />
+                </div>
 
-            <!-- Search by revenue range -->
-            <div class="search-bar search-bar--revenue-min">
-                <input id="search-input--revenue-min" class="search-input search-input--revenue-min" type="number"
-                    placeholder="Search revenue min" />
-            </div>
+                <!-- Search by revenue range -->
+                <div class="search-bar search-bar--revenue-min">
+                    <input id="search-input--revenue-min" class="search-input search-input--revenue-min" type="number"
+                        placeholder="Search revenue min" />
+                </div>
 
-            <div class="search-bar search-bar--revenue-max">
-                <input id="search-input--revenue-max" class="search-input search-input--revenue-max" type="number"
-                    placeholder="Search revenue max" />
-            </div>
+                <div class="search-bar search-bar--revenue-max">
+                    <input id="search-input--revenue-max" class="search-input search-input--revenue-max" type="number"
+                        placeholder="Search revenue max" />
+                </div>
 
-            <!-- Search by rating range -->
-            <div class="search-bar search-bar--rating-min">
-                <input id="search-input--rating-min" class="search-input search-input--rating-min" type="number"
-                    placeholder="Search rating min" />
-            </div>
+                <!-- Search by rating range -->
+                <div class="search-bar search-bar--rating-min">
+                    <input id="search-input--rating-min" class="search-input search-input--rating-min" type="number"
+                        placeholder="Search rating min" />
+                </div>
 
-            <div class="search-bar search-bar--rating-max">
-                <input id="search-input--rating-max" class="search-input search-input--rating-max" type="number"
-                    placeholder="Search rating max" />
+                <div class="search-bar search-bar--rating-max">
+                    <input id="search-input--rating-max" class="search-input search-input--rating-max" type="number"
+                        placeholder="Search rating max" />
+                </div>
             </div>
 
             <div class="buttons">
-                <button id="button--search" class="button button--search" type="submit" aria-label="Submit Search" >
+                <button id="button--search" class="button button--search" type="submit" aria-label="Submit Search">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" class="ipc-icon ipc-icon--magnify"
                         viewBox="0 0 24 24" fill="currentColor" role="presentation">
                         <path fill="none" d="M0 0h24v24H0V0z"></path>
@@ -80,8 +84,8 @@
                         </path>
                     </svg>
                 </button>
-    
-                <button id="button--clear" class="button button--clear" type="reset" aria-label="Reset Form" >
+
+                <button id="button--clear" class="button button--clear" type="reset" aria-label="Reset Form">
                     Clear input
                 </button>
             </div>

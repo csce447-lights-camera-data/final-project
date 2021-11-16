@@ -1,3 +1,7 @@
+import { addCollapseFunctionality } from "./utility.js";
+
+addCollapseFunctionality();
+
 const titleInput = document.getElementById("search-input--title");
 const budgetMinInput = document.getElementById("search-input--budget-min");
 const budgetMaxInput = document.getElementById("search-input--budget-max");

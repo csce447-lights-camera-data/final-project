@@ -33,3 +33,7 @@ body {
   font-family: 'Roboto', sans-serif;
   line-height: 1;
 }
+
+.hidden {
+  display: none;
+}

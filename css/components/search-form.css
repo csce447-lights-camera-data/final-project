@@ -10,15 +10,13 @@
 
   display: grid;
   grid-template-columns: 1fr 1fr min-content;
-  grid-template-areas:
-    "title title expand-btn"
-    "budget-max budget-min expand-btn"
-    "revenue-min revenue-max expand-btn"
-    "rating-min rating-max expand-btn"
-    "buttons buttons expand-btn";
-  /* justify-content: center; */
   column-gap: 2rem;
   row-gap: 2rem;
+}
+
+.expand-btn {
+  grid-column: 3 / 4;
+  grid-row: 1 / -1;
 }
 
 .search-bar {
@@ -31,32 +29,36 @@
 }
 
 .search-bar--title {
-  grid-area: title;
+  grid-column: 1 / 3;
+  position: relative;
+  z-index: 2;
+}
+
+.additional-search-fields {
+  grid-column: 1 / 3;
+
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 2rem;
+  row-gap: 2rem;
 }
 
 .search-bar--budget-min {
-  grid-area: budget-min;
 }
 
 .search-bar--budget-max {
-  grid-area: budget-max;
 }
 
 .search-bar--revenue-min {
-  grid-area: revenue-min;
 }
 
 .search-bar--revenue-max {
-  grid-area: revenue-max;
 }
 
-
 .search-bar--rating-min {
-  grid-area: rating-min;
 }
 
 .search-bar--rating-max {
-  grid-area: rating-max;
 }
 
 .search-input {
@@ -88,7 +90,7 @@
   display: flex;
   gap: 2rem;
 
-  grid-area: buttons;
+  grid-column: 1 / 3;
 }
 
 .button {
