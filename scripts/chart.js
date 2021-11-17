@@ -4,8 +4,6 @@ let series;
 
 anychart.onDocumentReady(() => {
   anychart.data.loadJsonFile("imdb.json", (data) => {
-    // var stage = anychart.graphics.create('graph-container');
-
     let datalist = [];
 
     for (let val of Object.values(data)) {
@@ -54,8 +52,6 @@ anychart.onDocumentReady(() => {
     // enable the legend
     chart.legend(false);
 
-    // chart.container(stage).draw();
-
     // set the titles of the axes
 
     chart.xAxis().title("Budget");
@@ -70,51 +66,6 @@ anychart.onDocumentReady(() => {
 
     chart.minBubbleSize("10px");
     chart.maxBubbleSize("50px");
-
-
-    // scalable axes
-    // chart.margin({ left: 10, bottom: 10 });
-
-    // // chart.interactivity().zoomOnMouseWheel(true);
-    // var bounds = chart.getPixelBounds();
-
-    // //create x-scroller
-    // var xScroller = anychart.standalones.scroller();
-    // xScroller.parentBounds(60, bounds.height - 60, bounds.width - 80, 50);
-    // xScroller.container(stage).draw();
-
-    // //create y-scroller
-    // var yScroller = anychart.standalones.scroller();
-    // yScroller.orientation('left');
-    // yScroller.parentBounds(5, 10, 0, bounds.height - 60);
-    // yScroller.container(stage).draw();
-
-    // //place scrollers on window resize
-    // window.onresize = (event) => {
-    //   var bounds = chart.getPixelBounds();
-    //   xScroller.parentBounds(60, bounds.height - 60, bounds.width - 80, 50);
-    //   yScroller.parentBounds(5, 10, 0, bounds.height - 60);
-    // };
-
-    // //get info about scales
-    // var xScale = chart.xScale();
-    // var yScale = chart.yScale();
-
-    // var minX = xScale.minimum();
-    // var maxX = xScale.maximum();
-    // var minY = yScale.minimum();
-    // var maxY = yScale.maximum();
-
-    // //scroller listeners and handlers
-    // xScroller.listen('scrollerchange', (e) => {
-    //   xScale.minimum(e.startRatio * maxX + minX);
-    //   xScale.maximum(e.endRatio * maxX);
-    // });
-
-    // yScroller.listen('scrollerchange', (e) => {
-    //   yScale.minimum(e.startRatio * maxY + minY);
-    //   yScale.maximum(e.endRatio * maxY);
-    // });
 
     chart.listen('pointClick', (e) => {
       var index = e.iterator.getIndex();
