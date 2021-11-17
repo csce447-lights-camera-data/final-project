@@ -178,10 +178,15 @@ body {
   display: flex;
 }
 
-.result-wrapper {
+.result-display {
   display: grid;
   grid-template-columns: 4fr 1fr;
   grid-gap: 0px 0px;
+  height: 100%;
+  width: 100%;
+}
+
+.no-result {
   height: 100%;
   width: 100%;
 }
