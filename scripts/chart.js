@@ -1,6 +1,17 @@
+import setSeriesAndMapping from "./search.js";
+
 let dataset;
 let mapping;
 let series;
+
+let formatter = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
+
+  // These options are needed to round to whole numbers if that's what you want.
+  //minimumFractionDigits: 0, // (this suffices for whole numbers, but will print 2500.10 as $2,500.1)
+  maximumFractionDigits: 0, // (causes 2500.99 to be printed as $2,501)
+});
 
 anychart.onDocumentReady(() => {
   anychart.data.loadJsonFile("imdb.json", (data) => {
@@ -45,6 +56,8 @@ anychart.onDocumentReady(() => {
 
     // create a bubble series and set the data
     series = chart.bubble(dataset);
+    // link series and mapping to the search form
+    setSeriesAndMapping(series, mapping);
 
     // set the chart title
     chart.title("Bubble Chart: Appearance (Individual Points)");
@@ -59,10 +72,11 @@ anychart.onDocumentReady(() => {
 
     var tooltip = chart.tooltip();
 
-    // tooltip.format(() => this.value + " test")
-    tooltip.titleFormat("Title: {%movie}\nRating: {%rating}\nBudget: ${%x}\nRevenue: {%value}");
-    tooltip.separator(false);
-    tooltip.format("");
+    tooltip.titleFormat("{%movie}");
+    // Must use old style function, not sure why
+    tooltip.format(function () {
+      return `Rating: ${this.getData('rating')}\nBudget: ${formatter.format(this.x)}\nRevenue: ${formatter.format(this.value)}`
+    });
 
     chart.minBubbleSize("10px");
     chart.maxBubbleSize("50px");
@@ -93,104 +107,23 @@ const displayResult = (movie) => {
   result.id = "result";
   document.getElementById('result-wrapper').appendChild(result);
   document.getElementById("result-wrapper").className = "result-display";
-  const res = '<div align="center">' +
-    '<span id="close" style="cursor: pointer; float: right">&#10006</span>' +
-    '<h2>' + movie.movie + '</h2>' +
-    '<table style="width=100%">' +
-    '<tr><td style="width: 30%"><h3>Summary</h3></td><td><h3>' + movie.summary + '</h3></td></tr>' +
-    '<tr><td style="width: 30%"><h3>Budget</h3></td><td><h3> $' + movie.x + '</h3></td></tr>' +
-    '<tr><td style="width: 30%"><h3>Worldwide Gross Income</h3></td><td><h3> $' + movie.value + '</h3></td></tr>' +
-    '<tr><td style="width: 30%"><h3>Rating</h3></td><td><h3>' + movie.rating + '</h3></td></tr>' +
-    '<tr><td style="width: 30%"><h3>Genres</h3></td><td><h3>' + (movie.genres).split(', ').join('<br/>') + '</h3></td></tr>' +
-    '<tr><td style="width: 30%"><h3>Director</h3></td><td><h3>' + (movie.director).split(', ').join('<br/>') + '</h3></td></tr>' +
-    '<tr><td style="width: 30%"><h3>Writer</h3></td><td><h3>' + (movie.writer).split(', ').join('<br/>') + '</h3></td></tr>' +
-    '<tr><td style="width: 30%"><h3>Actors</h3></td><td><h3>' + (movie.actors).split(', ').join('<br/>') + '</h3></td></tr>' +
-    '</table></div>';
-    document.getElementById("result").innerHTML = res;
-    document.getElementById("close").addEventListener("click", collapseResult);
-}
-
-const titleInput = document.getElementById("search-input--title");
-const budgetMinInput = document.getElementById("search-input--budget-min");
-const budgetMaxInput = document.getElementById("search-input--budget-max");
-const revenueMinInput = document.getElementById("search-input--revenue-min");
-const revenueMaxInput = document.getElementById("search-input--revenue-max");
-const ratingMinInput = document.getElementById("search-input--rating-min");
-const ratingMaxInput = document.getElementById("search-input--rating-max");
-
-const searchTitle = (filtered) => {
-  const input = titleInput.value;
-  const seperator = '.{0,1}'
-  let regexString = seperator
-  for (const c of input) { regexString += c + seperator; }
-  const regex = new RegExp(regexString, 'i');
-  if (input) {
-    filtered = filtered.filter("movie", (title) => regex.test(title));
-  }
-  return filtered;
+  const res = `
+  <div align="center">
+    <span id="close" style="cursor: pointer; float: right">&#10006</span>
+    <h2>${movie.movie}</h2>
+    <table style="width=100%">
+      <tr><td style="width: 30%"><h3>Summary</h3></td><td><h3>${movie.summary}</h3></td></tr>
+      <tr><td style="width: 30%"><h3>Budget</h3></td><td><h3>${formatter.format(movie.x)}</h3></td></tr>
+      <tr><td style="width: 30%"><h3>Worldwide Gross Income</h3></td><td><h3>${formatter.format(movie.value)}</h3></td></tr>
+      <tr><td style="width: 30%"><h3>Rating</h3></td><td><h3>${movie.rating}</h3></td></tr>
+      <tr><td style="width: 30%"><h3>Genres</h3></td><td><h3>${(movie.genres).split(', ').join('<br/>')}</h3></td></tr>
+      <tr><td style="width: 30%"><h3>Director</h3></td><td><h3>${(movie.director).split(', ').join('<br/>')}</h3></td></tr>
+      <tr><td style="width: 30%"><h3>Writer</h3></td><td><h3>${(movie.writer).split(', ').join('<br/>')}</h3></td></tr>
+      <tr><td style="width: 30%"><h3>Actors</h3></td><td><h3>${(movie.actors).split(', ').join('<br/>')}</h3></td></tr>
+    </table>
+  </div>
+  `;
+  document.getElementById("result").innerHTML = res;
+  document.getElementById("close").addEventListener("click", collapseResult);
 };
 
-const swap = (a, b) => [b, a]
-
-const searchRange = (filtered, chartval, rangeMin, rangeMax) => {
-  if (rangeMax < rangeMin) {
-    rangeMin, rangeMax = swap(rangeMin, rangeMax);
-  }
-  return filtered.filter(chartval, (val) => rangeMin <= val && val <= rangeMax);
-};
-
-const searchBudget = (filtered) => {
-  let inputMin = +budgetMinInput.value; // unary plus convert to number
-  let inputMax = +budgetMaxInput.value; // unary plus convert to number
-  if (!budgetMinInput.value) {
-    inputMin = -Infinity;
-  }
-  if (!budgetMaxInput.value) {
-    inputMax = Infinity;
-  }
-  return searchRange(filtered, "x", inputMin, inputMax);
-};
-
-const searchRevenue = (filtered) => {
-  let inputMin = +revenueMinInput.value; // unary plus convert to number
-  let inputMax = +revenueMaxInput.value; // unary plus convert to number
-  if (!revenueMinInput.value) {
-    inputMin = -Infinity;
-  }
-  if (!revenueMaxInput.value) {
-    inputMax = Infinity;
-  }
-  return searchRange(filtered, "value", inputMin, inputMax);
-};
-
-const searchRating = (filtered) => {
-  let inputMin = +ratingMinInput.value; // unary plus convert to number
-  let inputMax = +ratingMaxInput.value; // unary plus convert to number
-  if (!ratingMinInput.value) {
-    inputMin = -Infinity;
-  }
-  if (!ratingMaxInput.value) {
-    inputMax = Infinity;
-  }
-  return searchRange(filtered, "rating", inputMin, inputMax);
-};
-
-const search = () => series.data(
-  searchRating(
-    searchBudget(
-      searchRevenue(
-        searchTitle(
-          mapping
-        )
-      )
-    )
-  )
-);
-
-// Cause submission of form to call search()
-const searchForm = document.getElementById('search-form');
-
-searchForm.addEventListener('submit', e => {
-  e.preventDefault();
-  search();
-});

@@ -1,0 +1,52 @@
+/*****************************************************************/
+/**************************** BASE ****************************/
+/*****************************************************************/
+
+html {
+  font-size: 62.5%;
+}
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+body {
+  background-color: var(--color-black);
+  display: flex;
+  justify-content: center;
+  font-family: 'Roboto', sans-serif;
+  line-height: 1;
+}
+
+.hidden {
+  display: none;
+}
+
+.result-display {
+  display: grid;
+  grid-template-columns: 4fr 1fr;
+  grid-gap: 0px 0px;
+  height: 100%;
+  width: 100%;
+}
+
+.no-result {
+  height: 100%;
+  width: 100%;
+}

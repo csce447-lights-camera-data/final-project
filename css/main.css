@@ -1,0 +1,23 @@
+@import "./components/collapsible.css";
+@import "./components/expand-btn.css";
+@import "./components/search-form.css";
+@import "./components/visualization.css";
+
+@import "./layout/layout.css";
+
+@import "./partials/base.css";
+
+@import "./variables/colors.css";
+
+
+
+/* .text-logo {
+  background-color: var(--color-yellow);
+  color: var(--color-black);
+  font-size: 2.5rem;
+  font-weight: 900;
+  border-radius: 4px;
+  padding: 0.5rem 0.75rem;
+  position: absolute;
+  left: 13rem;
+} */
