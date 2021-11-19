@@ -4,10 +4,17 @@ let dataset;
 let mapping;
 let series;
 
+let formatter = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
+
+  // These options are needed to round to whole numbers if that's what you want.
+  //minimumFractionDigits: 0, // (this suffices for whole numbers, but will print 2500.10 as $2,500.1)
+  maximumFractionDigits: 0, // (causes 2500.99 to be printed as $2,501)
+});
+
 anychart.onDocumentReady(() => {
   anychart.data.loadJsonFile("imdb.json", (data) => {
-    var stage = anychart.graphics.create('graph-container');
-
     let datalist = [];
 
     for (let val of Object.values(data)) {
@@ -58,8 +65,6 @@ anychart.onDocumentReady(() => {
     // enable the legend
     chart.legend(false);
 
-    chart.container(stage).draw();
-
     // set the titles of the axes
 
     chart.xAxis().title("Budget");
@@ -67,58 +72,14 @@ anychart.onDocumentReady(() => {
 
     var tooltip = chart.tooltip();
 
-    // tooltip.format(() => this.value + " test")
-    tooltip.titleFormat("Title: {%movie}\nRating: {%rating}\nBudget: ${%x}\nRevenue: {%value}");
-    tooltip.separator(false);
-    tooltip.format("");
+    tooltip.titleFormat("{%movie}");
+    // Must use old style function, not sure why
+    tooltip.format(function () {
+      return `Rating: ${this.getData('rating')}\nBudget: ${formatter.format(this.x)}\nRevenue: ${formatter.format(this.value)}`
+    });
 
     chart.minBubbleSize("10px");
     chart.maxBubbleSize("50px");
-
-
-    // scalable axes
-    chart.margin({ left: 10, bottom: 10 });
-
-    // chart.interactivity().zoomOnMouseWheel(true);
-    var bounds = chart.getPixelBounds();
-
-    //create x-scroller
-    var xScroller = anychart.standalones.scroller();
-    xScroller.parentBounds(60, bounds.height - 60, bounds.width - 80, 50);
-    xScroller.container(stage).draw();
-
-    //create y-scroller
-    var yScroller = anychart.standalones.scroller();
-    yScroller.orientation('left');
-    yScroller.parentBounds(5, 10, 0, bounds.height - 60);
-    yScroller.container(stage).draw();
-
-    //place scrollers on window resize
-    window.onresize = (event) => {
-      var bounds = chart.getPixelBounds();
-      xScroller.parentBounds(60, bounds.height - 60, bounds.width - 80, 50);
-      yScroller.parentBounds(5, 10, 0, bounds.height - 60);
-    };
-
-    //get info about scales
-    var xScale = chart.xScale();
-    var yScale = chart.yScale();
-
-    var minX = xScale.minimum();
-    var maxX = xScale.maximum();
-    var minY = yScale.minimum();
-    var maxY = yScale.maximum();
-
-    //scroller listeners and handlers
-    xScroller.listen('scrollerchange', (e) => {
-      xScale.minimum(e.startRatio * maxX + minX);
-      xScale.maximum(e.endRatio * maxX);
-    });
-
-    yScroller.listen('scrollerchange', (e) => {
-      yScale.minimum(e.startRatio * maxY + minY);
-      yScale.maximum(e.endRatio * maxY);
-    });
 
     chart.listen('pointClick', (e) => {
       var index = e.iterator.getIndex();
@@ -126,26 +87,43 @@ anychart.onDocumentReady(() => {
       displayResult(row);
     })
 
-    // chart.container("graph-container");
+    chart.container("graph-container");
 
-    // // initiate drawing the chart
-    // chart.draw();
+    // initiate drawing the chart
+    chart.draw();
   });
 });
 
+const collapseResult = () => {
+  document.getElementById("result-wrapper").removeChild(document.getElementById("result"));
+  document.getElementById("result-wrapper").className = "no-result";
+}
+
 const displayResult = (movie) => {
-  const res = '<div align="center">' +
-    '<h2>' + movie.movie + '</h2>' +
-    '<table style="width=100%">' +
-    '<tr><td style="width: 30%"><h3>Summary</h3></td><td><h3>' + movie.summary + '</h3></td></tr>' +
-    '<tr><td style="width: 30%"><h3>Budget</h3></td><td><h3> $' + movie.x + '</h3></td></tr>' +
-    '<tr><td style="width: 30%"><h3>Worldwide Gross Income</h3></td><td><h3> $' + movie.value + '</h3></td></tr>' +
-    '<tr><td style="width: 30%"><h3>Rating</h3></td><td><h3>' + movie.rating + '</h3></td></tr>' +
-    '<tr><td style="width: 30%"><h3>Genres</h3></td><td><h3>' + (movie.genres).split(', ').join('<br/>') + '</h3></td></tr>' +
-    '<tr><td style="width: 30%"><h3>Director</h3></td><td><h3>' + (movie.director).split(', ').join('<br/>') + '</h3></td></tr>' +
-    '<tr><td style="width: 30%"><h3>Writer</h3></td><td><h3>' + (movie.writer).split(', ').join('<br/>') + '</h3></td></tr>' +
-    '<tr><td style="width: 30%"><h3>Actors</h3></td><td><h3>' + (movie.actors).split(', ').join('<br/>') + '</h3></td></tr>' +
-    '</table></div>';
+  if (document.body.contains(document.getElementById("result"))) {
+    collapseResult();
+  }
+  let result = document.createElement('div');
+  result.id = "result";
+  document.getElementById('result-wrapper').appendChild(result);
+  document.getElementById("result-wrapper").className = "result-display";
+  const res = `
+  <div align="center">
+    <span id="close" style="cursor: pointer; float: right">&#10006</span>
+    <h2>${movie.movie}</h2>
+    <table style="width=100%">
+      <tr><td style="width: 30%"><h3>Summary</h3></td><td><h3>${movie.summary}</h3></td></tr>
+      <tr><td style="width: 30%"><h3>Budget</h3></td><td><h3>${formatter.format(movie.x)}</h3></td></tr>
+      <tr><td style="width: 30%"><h3>Worldwide Gross Income</h3></td><td><h3>${formatter.format(movie.value)}</h3></td></tr>
+      <tr><td style="width: 30%"><h3>Rating</h3></td><td><h3>${movie.rating}</h3></td></tr>
+      <tr><td style="width: 30%"><h3>Genres</h3></td><td><h3>${(movie.genres).split(', ').join('<br/>')}</h3></td></tr>
+      <tr><td style="width: 30%"><h3>Director</h3></td><td><h3>${(movie.director).split(', ').join('<br/>')}</h3></td></tr>
+      <tr><td style="width: 30%"><h3>Writer</h3></td><td><h3>${(movie.writer).split(', ').join('<br/>')}</h3></td></tr>
+      <tr><td style="width: 30%"><h3>Actors</h3></td><td><h3>${(movie.actors).split(', ').join('<br/>')}</h3></td></tr>
+    </table>
+  </div>
+  `;
   document.getElementById("result").innerHTML = res;
+  document.getElementById("close").addEventListener("click", collapseResult);
 };
 
