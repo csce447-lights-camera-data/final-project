@@ -60,7 +60,7 @@ anychart.onDocumentReady(() => {
     setSeriesAndMapping(series, mapping);
 
     // set the chart title
-    chart.title("Bubble Chart: Appearance (Individual Points)");
+    chart.title("Movies Data");
 
     // enable the legend
     chart.legend(false);
